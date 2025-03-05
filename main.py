@@ -1,7 +1,71 @@
 import random
 import time
 import sys
-import subprocess
+
+import os
+
+rows, cols = 10, 10
+player_pos = [1, 1]  # Start position of the player
+
+maze = [
+    ['#', ' ', '#', '#', '#', '#', '#', '#', '#', '#'],
+    ['#', ' ', ' ', '#', '#', ' ', ' ', ' ', ' ', '#'],
+    ['#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', '#'],
+    ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#'],
+    ['#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', '#'],
+    ['#', '#', '#', ' ', '#', ' ', '#', ' ', ' ', '#'],
+    ['#', ' ', ' ', ' ', ' ', '#', '#', '#', ' ', '#'],
+    ['#', '#', '#', ' ', '#', ' ', '#', ' ', ' ', '#'],
+    ['#', ' ', ' ', ' ', ' ', ' ', ' ', '#', 'E', '#'],
+    ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+]
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear') #screen clear
+
+def display_maze():
+    clear_screen()
+    for r in range(rows):
+        row_str = ""
+        for c in range(cols): #iterates over the maze and prints the player position. So it clears console everytime player moves
+            if [r, c] == player_pos: 
+                row_str += '*'  
+            else:
+                row_str += maze[r][c]
+        print(row_str)
+    print("Use WASD and q to quit")
+
+def move_player(direction):
+    global player_pos
+    dr, dc = {'w': (-1, 0), 's': (1, 0), 'a': (0, -1), 'd': (0, 1)}.get(direction, (0, 0)) #movement function
+    new_r, new_c = player_pos[0] + dr, player_pos[1] + dc
+
+    if 0 <= new_r < rows and 0 <= new_c < cols and maze[new_r][new_c] != '#':
+        player_pos = [new_r, new_c] #makes sure player doesnt go out of bounds. 
+
+def play_game(): 
+    while True:
+        display_maze()
+
+        move = input("Enter move: ").lower()
+
+        if move == 'q':
+            print("Thanks for playing!")
+            
+
+        if move in ['w', 'a', 's', 'd']:
+            move_player(move)
+
+            if player_pos == [8, 8]:  # The exit position (row 8, column 8)
+                display_maze()
+                print("good job")                
+                boss()
+                
+
+def startmaze():
+    print("Find your way to the exit to go to boss ifhgt.")
+    play_game()
+
 
 #game menu
 def menu(): 
@@ -612,7 +676,7 @@ def entrance_puzzleroom():
   if (Puzzleroom== "y"):
     puzzle_room()##make puzzleroom function
   elif(Puzzleroom== "n"):
-    maze()
+    mazefn()
   else:
     print("I didn't catch that. Try another response.")
     entrance_puzzleroom() 
@@ -627,7 +691,7 @@ def puzzle_room():
     puzzle_game = True
     aces = False
   else:
-    maze()
+    mazefn()
   while puzzle_game == True:
     Question_1 = True
     Question_2 = False
@@ -671,18 +735,17 @@ def puzzle_room():
   if puzzle_game == False and aces == False:
     print("Nice try buddy, but you failed. Your final score was: "+ str(score))
     print("You're being sent to the maze.")
-    maze()
+    mazefn()
   if puzzle_game == False and aces == True:
     print("Holy moly, you're a genius! You got every single question correct! Your prize for beating the puzzle_game is…a rock. Yeah, its a nice, shiny rock.")
     user.addInventory(True, ["shiny rock", 15])
     print("Good luck friend, you're going to be sent to the maze.")
     print("Believe me, you'll need it.")
-    maze()
+    mazefn()
 
-def maze():
+def mazefn():
   print("You have entered ze maze.")
-  subprocess.Popen([sys.executable, './startpage.py', '--username', 'root'])
-  boss()
+  startmaze()
   
 def boss():
   print("You have made it to the final battle. Will you survive?")
@@ -695,4 +758,4 @@ def boss():
   time.sleep(1)
   print("Congratulations on beating Ashen Catacombs. We hope you enjoyed the game!")
 
-maze()
+menu()
