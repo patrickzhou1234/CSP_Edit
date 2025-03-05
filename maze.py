@@ -123,7 +123,7 @@ def main():
 
             if (player_x, player_y) != (prev_x, prev_y):
                 if player_x < prev_x or player_y < prev_y:
-                    in_extra_life_screen = True
+                    in_extra_life_screen = False
 
             prev_x, prev_y = player_x, player_y
 
